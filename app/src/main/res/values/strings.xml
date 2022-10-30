@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NodesMainMenu</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content"></string>
+    <string name="GroupNodes">Групповые заметки</string>
+    <string name="SingleNodesText">Одиночные заметки</string>
+    <string name="Exit">Выход</string>
+</resources>
