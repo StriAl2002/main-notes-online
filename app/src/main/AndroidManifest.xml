@@ -13,6 +13,14 @@
         android:theme="@style/Theme.NodesMainMenu"
         tools:targetApi="31">
         <activity
+            android:name=".FullscreenActivitySingle"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_fullscreen_single"
+            android:theme="@style/Theme.NodesMainMenu.Fullscreen"
+        />
+
+        <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"

@@ -5,4 +5,8 @@
     <string name="GroupNodes">Групповые заметки</string>
     <string name="SingleNodesText">Одиночные заметки</string>
     <string name="Exit">Выход</string>
+    <string name="title_activity_fullscreen_single">FullscreenActivitySingle</string>
+    <string name="back">Back</string>
+    <string name="node">Node</string>
+    <string name="plus">+</string>
 </resources>

@@ -13,14 +13,16 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
-import com.example.nodesmainmenu.databinding.ActivityFullscreenBinding;
+import com.example.nodesmainmenu.databinding.ActivityFullscreenSingleBinding;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity {
+public class FullscreenActivitySingle extends AppCompatActivity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -103,13 +105,13 @@ public class FullscreenActivity extends AppCompatActivity {
             return false;
         }
     };
-    private ActivityFullscreenBinding binding;
+    private ActivityFullscreenSingleBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityFullscreenBinding.inflate(getLayoutInflater());
+        binding = ActivityFullscreenSingleBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         mVisible = true;
@@ -187,14 +189,21 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    public void Exit(View view) {
+    public void OpenMain(View view) {
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        startActivity(intent);
         finish();
     }
 
+    public void CreateNewNode(View view) {
+        Button myButton = new Button(this);
+        myButton.setText("Push Me");
+        myButton.setHeight(300);
 
-    public void OpenSingle(View view) {
-        Intent intent = new Intent(this, FullscreenActivitySingle.class);
-        startActivity(intent);
-        finish();
+        LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        ll.addView(myButton, lp);
     }
 }
