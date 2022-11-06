@@ -9,4 +9,5 @@
     <string name="back">Back</string>
     <string name="node">Node</string>
     <string name="plus">+</string>
+    <string name="title_activity_notes_single">NotesSingle</string>
 </resources>

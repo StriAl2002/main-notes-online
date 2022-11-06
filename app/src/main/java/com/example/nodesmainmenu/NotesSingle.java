@@ -5,33 +5,22 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.DynamicLayout;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.nodesmainmenu.databinding.ActivityFullscreenSingleBinding;
-import com.google.android.material.color.DynamicColors;
-
-import java.util.ArrayList;
+import com.example.nodesmainmenu.databinding.ActivityNotesSingle2Binding;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivitySingle extends AppCompatActivity {
+public class NotesSingle extends AppCompatActivity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -114,24 +103,13 @@ public class FullscreenActivitySingle extends AppCompatActivity {
             return false;
         }
     };
-    private ActivityFullscreenSingleBinding binding;
-
-    ArrayList<String> notes = new ArrayList<String>();
-    ArrayAdapter<String> arrayAdapter;
+    private ActivityNotesSingle2Binding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_fullscreen_single);
-
-        /*ListView listView = (ListView)findViewById(R.id.listView);
-
-        notes.add("Example Note");
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, notes);
-        listView.setAdapter(arrayAdapter);
-*/
-        binding = ActivityFullscreenSingleBinding.inflate(getLayoutInflater());
+        binding = ActivityNotesSingle2Binding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         mVisible = true;
@@ -149,7 +127,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        //binding.dummyButton.setOnTouchListener(mDelayHideTouchListener);
+        binding.dummyButton.setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -209,29 +187,9 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    public void OpenMain(View view) {
-        Intent intent = new Intent(this, FullscreenActivity.class);
+    public void OpenSingle(View view) {
+        Intent intent = new Intent(this, FullscreenActivitySingle.class);
         startActivity(intent);
         finish();
-    }
-
-    public void CreateNewNode(View view) {
-        Button myButton = new Button(this);
-        myButton.setText("Push Me");
-        myButton.setHeight(300);
-
-        int id_ = myButton.getId();
-        LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        ll.addView(myButton, lp);
-        myButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
-                startActivity(intent);
-            }
-        });
     }
 }
