@@ -188,8 +188,6 @@ public class NotesSingle extends AppCompatActivity {
     }
 
     public void OpenSingle(View view) {
-        Intent intent = new Intent(this, FullscreenActivitySingle.class);
-        startActivity(intent);
         finish();
     }
 }
