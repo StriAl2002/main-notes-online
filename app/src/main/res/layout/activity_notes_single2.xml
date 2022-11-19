@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/fullscreenBackgroundColor"
+    android:background="@color/light_blue_600"
     android:theme="@style/ThemeOverlay.NodesMainMenu.FullscreenContainer"
     tools:context=".NotesSingle">
 
@@ -54,6 +54,7 @@
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/LayoutText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="15dp"
@@ -67,17 +68,19 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName2"
+                    android:id="@+id/EditedText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="5dp"
+                    android:autoSizeMinTextSize="1dp"
+                    android:autofillHints=""
                     android:ems="0"
                     android:gravity="start"
                     android:inputType="textMultiLine|textPersonName"
-                    android:text="Start your note!"
+                    android:text="@string/start_your_note"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -95,6 +98,17 @@
                 android:onClick="OpenSingle"
                 android:text="@string/back"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="186dp"
+                android:layout_marginTop="12dp"
+                android:onClick="load"
+                android:text="@string/load"
+                app:layout_constraintStart_toEndOf="@+id/button2"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

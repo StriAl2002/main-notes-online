@@ -6,13 +6,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.nodesmainmenu.databinding.ActivityNotesSingle2Binding;
 
@@ -21,6 +25,10 @@ import com.example.nodesmainmenu.databinding.ActivityNotesSingle2Binding;
  * status bar and navigation/system bar) with user interaction.
  */
 public class NotesSingle extends AppCompatActivity {
+
+    SharedPreferences sPref;
+
+    final String SAVED_TEXT = "saved_text";
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -104,11 +112,12 @@ public class NotesSingle extends AppCompatActivity {
         }
     };
     private ActivityNotesSingle2Binding binding;
-
+    private View myView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        myView = findViewById(R.id.load);
         binding = ActivityNotesSingle2Binding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -188,6 +197,38 @@ public class NotesSingle extends AppCompatActivity {
     }
 
     public void OpenSingle(View view) {
+        save();
         finish();
+    }
+
+
+
+    private void save() {
+        final EditText edit =  (EditText) findViewById(R.id.EditedText);
+        String myText = edit.getText().toString();
+        sPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(SAVED_TEXT, myText);
+        ed.apply();
+        //Toast.makeText(this, myText, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+        String save = sPref.getString(SAVED_TEXT, "");
+        //Toast.makeText(this, save, Toast.LENGTH_SHORT).show();
+    }
+
+    public void load(View view) {
+        final EditText edit =  (EditText) findViewById(R.id.EditedText);
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText;
+        try {
+            savedText = sPref.getString(SAVED_TEXT, "");
+            edit.setText(savedText);
+            Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
+            Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -10,4 +10,6 @@
     <string name="node">Node</string>
     <string name="plus">+</string>
     <string name="title_activity_notes_single">NotesSingle</string>
+    <string name="start_your_note">Start your note!</string>
+    <string name="load">load</string>
 </resources>
