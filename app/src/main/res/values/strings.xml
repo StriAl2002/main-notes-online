@@ -12,4 +12,13 @@
     <string name="title_activity_notes_single">NotesSingle</string>
     <string name="start_your_note">Start your note!</string>
     <string name="load">load</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Имя</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти или зарегистрироваться</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Добро пожаловать "</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 </resources>
