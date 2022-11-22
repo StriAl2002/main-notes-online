@@ -215,12 +215,17 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         finish();
     }
 
+    Integer buttonId = 1;
+
     public void CreateNewNode(View view) {
         Button myButton = new Button(this);
-        myButton.setText("Push Me");
         myButton.setHeight(300);
+        String realId = "Node " + buttonId.toString();
+        myButton.setId(buttonId);
+        myButton.setText(realId);
+        buttonId = buttonId + 1;
 
-        int id_ = myButton.getId();
+        Integer id_ = myButton.getId();
         LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -230,6 +235,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
+                intent.putExtra("key", id_.toString());
                 startActivity(intent);
             }
         });

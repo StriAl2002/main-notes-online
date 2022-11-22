@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -112,14 +113,18 @@ public class NotesSingle extends AppCompatActivity {
         }
     };
     private ActivityNotesSingle2Binding binding;
-    private View myView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        myView = findViewById(R.id.load);
+        String id = getIntent().getExtras().getString("key");
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
         binding = ActivityNotesSingle2Binding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        Button btn;
+        btn = (Button)findViewById(R.id.load);
+        btn.performClick();
 
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
