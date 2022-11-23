@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -203,30 +204,34 @@ public class NotesSingle extends AppCompatActivity {
 
     public void OpenSingle(View view) {
         save();
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
+        startActivity(intent);
         finish();
     }
 
 
 
     private void save() {
+        String id = getIntent().getExtras().getString("key");
         final EditText edit =  (EditText) findViewById(R.id.EditedText);
         String myText = edit.getText().toString();
-        sPref = getPreferences(MODE_PRIVATE);
+        //sPref = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(SAVED_TEXT, myText);
+        ed.putString(id, myText);
         ed.apply();
         //Toast.makeText(this, myText, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
-        String save = sPref.getString(SAVED_TEXT, "");
+        //String save = sPref.getString(SAVED_TEXT, "");
         //Toast.makeText(this, save, Toast.LENGTH_SHORT).show();
     }
 
     public void load(View view) {
+        String id = getIntent().getExtras().getString("key");
         final EditText edit =  (EditText) findViewById(R.id.EditedText);
         sPref = getPreferences(MODE_PRIVATE);
         String savedText;
         try {
-            savedText = sPref.getString(SAVED_TEXT, "");
+            savedText = sPref.getString(id, "");
             edit.setText(savedText);
             Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
         } catch (Exception e){
@@ -235,5 +240,29 @@ public class NotesSingle extends AppCompatActivity {
         finally {
             Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    boolean state = true;
+    public void menu(View view){
+        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.menu);
+        if (state){
+            menu.setVisibility(menu.VISIBLE);
+            state = false;
+        } else {
+            menu.setVisibility(menu.GONE);
+            state = true;
+        }
+    }
+
+    public void delete(View view){
+        String id = getIntent().getExtras().getString("key");
+        final EditText edit =  (EditText) findViewById(R.id.EditedText);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(id, "");
+        ed.apply();
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
+        intent.putExtra("delete", id);
+        startActivity(intent);
+        finish();
     }
 }

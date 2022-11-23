@@ -42,6 +42,7 @@
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/field"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#A54405">
@@ -59,13 +60,13 @@
                 tools:ignore="TouchTargetSizeCheck" />
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/add"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/plus"
                 android:onClick="CreateNewNode"
+                android:text="@string/plus"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

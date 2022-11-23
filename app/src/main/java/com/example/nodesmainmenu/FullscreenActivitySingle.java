@@ -5,25 +5,22 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.DynamicLayout;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.nodesmainmenu.databinding.ActivityFullscreenSingleBinding;
-import com.google.android.material.color.DynamicColors;
 
 import java.util.ArrayList;
 
@@ -36,6 +33,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
+    SharedPreferences sPref;
     private static final boolean AUTO_HIDE = true;
 
     /**
@@ -137,6 +135,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
+        RestoreNode();
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -216,14 +215,21 @@ public class FullscreenActivitySingle extends AppCompatActivity {
     }
 
     Integer buttonId = 1;
+    Integer createdNotes = 0;
 
     public void CreateNewNode(View view) {
+        Toast.makeText(this, "pressed", Toast.LENGTH_SHORT).show();
         Button myButton = new Button(this);
         myButton.setHeight(300);
         String realId = "Node " + buttonId.toString();
         myButton.setId(buttonId);
         myButton.setText(realId);
         buttonId = buttonId + 1;
+        createdNotes = createdNotes + 1;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed = preferences.edit();
+        ed.putString("Buttons", createdNotes.toString());
+        ed.apply();
 
         Integer id_ = myButton.getId();
         LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
@@ -237,7 +243,35 @@ public class FullscreenActivitySingle extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
                 intent.putExtra("key", id_.toString());
                 startActivity(intent);
+                finish();
             }
         });
     }
+
+    public void RestoreNode() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //sPref = getPreferences(MODE_PRIVATE);
+        String savedText = "0";
+        try {
+            savedText = preferences.getString("Buttons", "");
+            Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
+            Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
+        }
+        int count = Integer.parseInt(savedText);
+        while (count > 0){
+            //Toast.makeText(this, count.toString(), Toast.LENGTH_SHORT).show();
+            Button btn;
+            btn = findViewById(R.id.add);
+            btn.performClick();
+            count = count - 1;
+        }
+
+    }
+    /*public void DeleteNode(View view){
+        View button = findViewById(R.id.)
+    }*/
 }
