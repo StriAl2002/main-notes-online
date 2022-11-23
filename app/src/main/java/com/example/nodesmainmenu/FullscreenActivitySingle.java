@@ -33,7 +33,6 @@ public class FullscreenActivitySingle extends AppCompatActivity {
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
-    SharedPreferences sPref;
     private static final boolean AUTO_HIDE = true;
 
     /**
@@ -218,34 +217,51 @@ public class FullscreenActivitySingle extends AppCompatActivity {
     Integer createdNotes = 0;
 
     public void CreateNewNode(View view) {
-        Toast.makeText(this, "pressed", Toast.LENGTH_SHORT).show();
-        Button myButton = new Button(this);
-        myButton.setHeight(300);
-        String realId = "Node " + buttonId.toString();
-        myButton.setId(buttonId);
-        myButton.setText(realId);
-        buttonId = buttonId + 1;
-        createdNotes = createdNotes + 1;
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor ed = preferences.edit();
-        ed.putString("Buttons", createdNotes.toString());
-        ed.apply();
-
-        Integer id_ = myButton.getId();
-        LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        ll.addView(myButton, lp);
-        myButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
-                intent.putExtra("key", id_.toString());
-                startActivity(intent);
-                finish();
+        String id = "0";
+        try {
+            id = getIntent().getExtras().getString("delete");
+            Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
+        }
+        finally {
+            Button myButton = new Button(this);
+            myButton.setHeight(300);
+            String realId = "Node " + buttonId.toString();
+            myButton.setId(buttonId);
+            myButton.setText(realId);
+            buttonId = buttonId + 1;
+            Integer intid = Integer.parseInt(id) + 1;
+            if (intid == buttonId){
+                myButton.setVisibility(View.GONE);
+                createdNotes = createdNotes - 1;
             }
-        });
+            else {
+                createdNotes = createdNotes + 1;
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor ed = preferences.edit();
+                ed.putString("Buttons", createdNotes.toString());
+                ed.apply();
+
+                Integer id_ = myButton.getId();
+                //Toast.makeText(this, id_.toString(), Toast.LENGTH_SHORT).show();
+                LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                ll.addView(myButton, lp);
+                myButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
+                        intent.putExtra("key", id_.toString());
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+            }
+        }
+
+
     }
 
     public void RestoreNode() {
@@ -254,12 +270,12 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         String savedText = "0";
         try {
             savedText = preferences.getString("Buttons", "");
-            Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
         } catch (Exception e){
-            Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
         }
         finally {
-            Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
         }
         int count = Integer.parseInt(savedText);
         while (count > 0){

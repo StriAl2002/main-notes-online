@@ -56,7 +56,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/menu"
                 android:layout_width="200dp"
-                android:layout_height="210dp"
+                android:layout_height="250dp"
                 android:layout_marginTop="70dp"
                 android:layout_marginEnd="16dp"
                 android:background="#D26AE8"
@@ -67,15 +67,15 @@
                 tools:visibility="visible">
 
                 <Button
-                    android:id="@+id/load"
+                    android:id="@+id/button9"
                     android:layout_width="180dp"
                     android:layout_height="55dp"
-                    android:layout_marginTop="10dp"
-                    android:onClick="load"
-                    android:text="@string/load"
+                    android:layout_marginTop="75dp"
+                    android:onClick="rename"
+                    android:text="rename"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/load" />
 
                 <Button
                     android:id="@+id/button6"
@@ -89,14 +89,38 @@
                     app:layout_constraintTop_toBottomOf="@+id/load" />
 
                 <Button
-                    android:id="@+id/button9"
+                    android:id="@+id/load"
                     android:layout_width="180dp"
                     android:layout_height="55dp"
-                    android:layout_marginTop="75dp"
-                    android:text="rename"
+                    android:layout_marginTop="10dp"
+                    android:onClick="load"
+                    android:text="@string/load"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/load" />
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/rename"
+                    android:layout_width="200dp"
+                    android:layout_height="55dp"
+                    android:background="#8C7E4C"
+                    android:translationZ="250dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/button9">
+
+                    <EditText
+                        android:id="@+id/renametext"
+                        android:layout_width="200dp"
+                        android:layout_height="55dp"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="Name"
+                        android:translationZ="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -117,20 +141,14 @@
                     android:id="@+id/EditedText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
                     android:autoSizeMinTextSize="1dp"
                     android:autofillHints=""
                     android:ems="0"
                     android:gravity="start"
                     android:inputType="textMultiLine|textPersonName"
                     android:text="@string/start_your_note"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
+                    tools:layout_editor_absoluteX="180dp"
+                    tools:layout_editor_absoluteY="180dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button

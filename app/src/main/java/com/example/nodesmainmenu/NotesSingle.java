@@ -265,4 +265,8 @@ public class NotesSingle extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void rename(View view){
+
+    }
 }
