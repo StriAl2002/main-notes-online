@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.Toast;
 
 import com.example.nodesmainmenu.databinding.ActivityFullscreenBinding;
 
@@ -105,6 +106,8 @@ public class FullscreenActivity extends AppCompatActivity {
     };
     private ActivityFullscreenBinding binding;
 
+    String username = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +118,9 @@ public class FullscreenActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
+        try {username = getIntent().getExtras().getString("username");
+        } catch (Exception e) {}
+        finally {}
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -191,9 +197,23 @@ public class FullscreenActivity extends AppCompatActivity {
         finish();
     }
 
-
     public void OpenSingle(View view) {
         Intent intent = new Intent(this, FullscreenActivitySingle.class);
+        intent.putExtra("username", username);
+        startActivity(intent);
+        finish();
+    }
+
+    public void OpenGroup(View view) {
+        Intent intent = new Intent(this, FullscreenActivityGroup.class);
+        intent.putExtra("username", username);
+        startActivity(intent);
+        finish();
+    }
+
+    public void OpenProfile(View view) {
+        Intent intent = new Intent(this, Profile.class);
+        intent.putExtra("username", username);
         startActivity(intent);
         finish();
     }

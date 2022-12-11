@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/light_blue_600"
     android:theme="@style/ThemeOverlay.NodesMainMenu.FullscreenContainer"
-    tools:context=".NotesSingle">
+    tools:context=".NotesGroup">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -56,7 +56,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/menu"
                 android:layout_width="200dp"
-                android:layout_height="250dp"
+                android:layout_height="310dp"
                 android:layout_marginTop="70dp"
                 android:layout_marginEnd="16dp"
                 android:background="#D26AE8"
@@ -78,6 +78,17 @@
                     app:layout_constraintTop_toBottomOf="@id/load" />
 
                 <Button
+                    android:id="@+id/button13"
+                    android:layout_width="180dp"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="10dp"
+                    android:onClick="rename"
+                    android:text="пользователи"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
                     android:id="@+id/button6"
                     android:layout_width="180dp"
                     android:layout_height="55dp"
@@ -97,7 +108,7 @@
                     android:text="@string/load"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/button13" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/rename"
@@ -157,7 +168,7 @@
                 android:layout_height="55dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:onClick="OpenSingle"
+                android:onClick="OpenGroup"
                 android:text="@string/back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

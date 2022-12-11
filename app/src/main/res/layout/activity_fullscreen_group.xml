@@ -7,7 +7,7 @@
     android:background="?attr/fullscreenBackgroundColor"
     android:backgroundTint="#321E1E"
     android:theme="@style/ThemeOverlay.NodesMainMenu.FullscreenContainer"
-    tools:context=".FullscreenActivitySingle">
+    tools:context=".FullscreenActivityGroup">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -65,6 +65,7 @@
                 android:layout_height="55dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:background="#6E3AB7"
                 android:onClick="CreateNewNode"
                 android:text="@string/plus"
                 app:layout_constraintEnd_toEndOf="parent"

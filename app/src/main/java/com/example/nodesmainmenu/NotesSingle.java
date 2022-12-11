@@ -204,7 +204,9 @@ public class NotesSingle extends AppCompatActivity {
 
     public void OpenSingle(View view) {
         save();
+        String username = getIntent().getExtras().getString("username");
         Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
+        intent.putExtra("username", username);
         startActivity(intent);
         finish();
     }
@@ -233,9 +235,9 @@ public class NotesSingle extends AppCompatActivity {
         try {
             savedText = sPref.getString(id, "");
             edit.setText(savedText);
-            Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
         } catch (Exception e){
-            Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
         }
         finally {
             Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
@@ -256,12 +258,14 @@ public class NotesSingle extends AppCompatActivity {
 
     public void delete(View view){
         String id = getIntent().getExtras().getString("key");
+        String username = getIntent().getExtras().getString("username");
         final EditText edit =  (EditText) findViewById(R.id.EditedText);
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString(id, "");
         ed.apply();
         Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
         intent.putExtra("delete", id);
+        intent.putExtra("username", username);
         startActivity(intent);
         finish();
     }

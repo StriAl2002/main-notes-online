@@ -4,31 +4,28 @@ import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.nodesmainmenu.databinding.ActivityFullscreenSingleBinding;
-
-import java.util.ArrayList;
+import com.example.nodesmainmenu.databinding.ActivityProfileBinding;
+import com.example.nodesmainmenu.ui.login.LoginActivity;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivitySingle extends AppCompatActivity {
+public class Profile extends AppCompatActivity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -111,24 +108,23 @@ public class FullscreenActivitySingle extends AppCompatActivity {
             return false;
         }
     };
-    private ActivityFullscreenSingleBinding binding;
-
-    ArrayList<String> notes = new ArrayList<String>();
-    ArrayAdapter<String> arrayAdapter;
+    private ActivityProfileBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_fullscreen_single);
-
-        binding = ActivityFullscreenSingleBinding.inflate(getLayoutInflater());
+        binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
-        RestoreNode();
+        String username = getIntent().getExtras().getString("username");
+        Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
+        EditText et = (EditText)findViewById(R.id.UserName);
+        et.setText(username);
+        et.setClickable(false);
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -202,94 +198,47 @@ public class FullscreenActivitySingle extends AppCompatActivity {
     }
 
     public void OpenMain(View view) {
-        String username = getIntent().getExtras().getString("username");
+        EditText et = (EditText)findViewById(R.id.UserName);
         Intent intent = new Intent(this, FullscreenActivity.class);
-        intent.putExtra("username", username);
+        intent.putExtra("username", et.getText().toString());
+        Toast.makeText(this, et.getText().toString(), Toast.LENGTH_SHORT).show();
         startActivity(intent);
         finish();
     }
 
-    Integer buttonId = 1;
-    Integer createdNotes = 0;
-
-    public void CreateNewNode(View view) {
-        String id = "0";
-        try {
-            id = getIntent().getExtras().getString("delete");
-            Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
-        } catch (Exception e){
+    boolean state = true;
+    public void ChangeName(View view){
+        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.Name);
+        Button btn = (Button)findViewById(R.id.button4);
+        if (state){
+            menu.setVisibility(menu.VISIBLE);
+            state = false;
+            btn.setText("Сохранить");
+        } else {
+            menu.setVisibility(menu.GONE);
+            state = true;
+            btn.setText("Изменить имя");
         }
-        finally {
-            Button myButton = new Button(this);
-            myButton.setHeight(300);
-            String realId = "Node " + buttonId.toString();
-            myButton.setId(buttonId);
-            myButton.setText(realId);
-            buttonId = buttonId + 1;
-            Integer intid = 0;
-            try {
-                intid = Integer.parseInt(id) + 1;
-            }catch (Exception e){}
-            finally {}
-            if (intid == buttonId){
-                myButton.setVisibility(View.GONE);
-                createdNotes = createdNotes - 1;
-            }
-            else {
-                createdNotes = createdNotes + 1;
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor ed = preferences.edit();
-                ed.putString("Buttons", createdNotes.toString());
-                ed.apply();
-
-                Integer id_ = myButton.getId();
-                //Toast.makeText(this, id_.toString(), Toast.LENGTH_SHORT).show();
-                LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-                ll.addView(myButton, lp);
-                myButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String username = getIntent().getExtras().getString("username");
-                        Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
-                        intent.putExtra("key", id_.toString());
-                        intent.putExtra("username", username);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-            }
-        }
-
-
     }
 
-    public void RestoreNode() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        //sPref = getPreferences(MODE_PRIVATE);
-        String savedText = "0";
-        try {
-            savedText = preferences.getString("Buttons", "");
-            //Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
-        } catch (Exception e){
-            //Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
+    boolean statePass = true;
+    public void ChangePassword(View view){
+        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.Password);
+        Button btn = (Button)findViewById(R.id.button10);
+        if (statePass){
+            menu.setVisibility(menu.VISIBLE);
+            statePass = false;
+            btn.setText("Сохранить");
+        } else {
+            menu.setVisibility(menu.GONE);
+            statePass = true;
+            btn.setText("Сменить пароль");
         }
-        finally {
-            //Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
-        }
-        int count = Integer.parseInt(savedText);
-        while (count > 0){
-            //Toast.makeText(this, count.toString(), Toast.LENGTH_SHORT).show();
-            Button btn;
-            btn = findViewById(R.id.add);
-            btn.performClick();
-            count = count - 1;
-        }
-
     }
-    /*public void DeleteNode(View view){
-        View button = findViewById(R.id.)
-    }*/
+
+    public void OpenAuth(View view) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

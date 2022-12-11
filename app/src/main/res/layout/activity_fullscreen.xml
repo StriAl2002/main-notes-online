@@ -46,11 +46,13 @@
 
             <Button
                 android:id="@+id/button7"
-                android:layout_width="wrap_content"
+                android:layout_width="300dp"
                 android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:onClick="OpenSingle"
                 android:text="@string/SingleNodesText"
                 android:textSize="20sp"
-                android:onClick="OpenSingle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -60,9 +62,12 @@
 
             <Button
                 android:id="@+id/button8"
-                android:layout_width="wrap_content"
+                android:layout_width="300dp"
                 android:layout_height="60dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="20dp"
+                android:onClick="OpenGroup"
                 android:text="@string/GroupNodes"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -91,6 +96,20 @@
                 app:layout_constraintHorizontal_bias="0.459"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:textSize="24sp" />
+
+            <Button
+                android:id="@+id/button12"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="24dp"
+                android:onClick="OpenProfile"
+                android:text="Профиль"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/button7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>

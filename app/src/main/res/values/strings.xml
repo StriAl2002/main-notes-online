@@ -6,12 +6,12 @@
     <string name="SingleNodesText">Одиночные заметки</string>
     <string name="Exit">Выход</string>
     <string name="title_activity_fullscreen_single">FullscreenActivitySingle</string>
-    <string name="back">Back</string>
-    <string name="node">Node</string>
+    <string name="back">Назад</string>
+    <string name="node">Заметка</string>
     <string name="plus">+</string>
     <string name="title_activity_notes_single">NotesSingle</string>
     <string name="start_your_note">Start your note!</string>
-    <string name="load">load</string>
+    <string name="load">Загрузить</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Имя</string>
     <string name="prompt_password">Пароль</string>
@@ -19,7 +19,10 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Добро пожаловать "</string>
     <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_password">Пароль должен иметь >5 символов</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="options">Options</string>
+    <string name="options">Опции</string>
+    <string name="title_activity_fullscreen_group">FullscreenActivityGroup</string>
+    <string name="title_activity_notes_group">NotesGroup</string>
+    <string name="title_activity_profile">Profile</string>
 </resources>

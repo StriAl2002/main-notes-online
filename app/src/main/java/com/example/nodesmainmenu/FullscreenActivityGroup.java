@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.nodesmainmenu.databinding.ActivityFullscreenSingleBinding;
+import com.example.nodesmainmenu.databinding.ActivityFullscreenGroupBinding;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivitySingle extends AppCompatActivity {
+public class FullscreenActivityGroup extends AppCompatActivity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -111,7 +111,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
             return false;
         }
     };
-    private ActivityFullscreenSingleBinding binding;
+    private ActivityFullscreenGroupBinding binding;
 
     ArrayList<String> notes = new ArrayList<String>();
     ArrayAdapter<String> arrayAdapter;
@@ -120,9 +120,15 @@ public class FullscreenActivitySingle extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_fullscreen_single);
+        setContentView(R.layout.activity_fullscreen_group);
 
-        binding = ActivityFullscreenSingleBinding.inflate(getLayoutInflater());
+        /*ListView listView = (ListView)findViewById(R.id.listView);
+
+        notes.add("Example Note");
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, notes);
+        listView.setAdapter(arrayAdapter);
+*/
+        binding = ActivityFullscreenGroupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         mVisible = true;
@@ -216,7 +222,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         String id = "0";
         try {
             id = getIntent().getExtras().getString("delete");
-            Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
         } catch (Exception e){
         }
         finally {
@@ -239,7 +245,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
                 createdNotes = createdNotes + 1;
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor ed = preferences.edit();
-                ed.putString("Buttons", createdNotes.toString());
+                ed.putString("ButtonsGroup", createdNotes.toString());
                 ed.apply();
 
                 Integer id_ = myButton.getId();
@@ -253,7 +259,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String username = getIntent().getExtras().getString("username");
-                        Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
+                        Intent intent = new Intent(getApplicationContext(), NotesGroup.class);
                         intent.putExtra("key", id_.toString());
                         intent.putExtra("username", username);
                         startActivity(intent);
@@ -271,7 +277,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         //sPref = getPreferences(MODE_PRIVATE);
         String savedText = "0";
         try {
-            savedText = preferences.getString("Buttons", "");
+            savedText = preferences.getString("ButtonsGroup", "");
             //Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
         } catch (Exception e){
             //Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();

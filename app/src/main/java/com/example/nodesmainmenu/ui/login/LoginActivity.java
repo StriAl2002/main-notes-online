@@ -124,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
                 Intent intent = new Intent(LoginActivity.this, FullscreenActivity.class);
+                intent.putExtra("username", usernameEditText.getText().toString());
                 startActivity(intent);
             }
         });
