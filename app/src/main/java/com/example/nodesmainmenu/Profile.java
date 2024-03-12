@@ -21,27 +21,13 @@ import android.widget.Toast;
 import com.example.nodesmainmenu.databinding.ActivityProfileBinding;
 import com.example.nodesmainmenu.ui.login.LoginActivity;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
+import java.util.Objects;
+
 public class Profile extends AppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
     private static final boolean AUTO_HIDE = true;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler(Looper.myLooper());
     private View mContentView;
@@ -49,14 +35,10 @@ public class Profile extends AppCompatActivity {
         @SuppressLint("InlinedApi")
         @Override
         public void run() {
-            // Delayed removal of status and navigation bar
             if (Build.VERSION.SDK_INT >= 30) {
                 mContentView.getWindowInsetsController().hide(
                         WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
             } else {
-                // Note that some of these constants are new as of API 16 (Jelly Bean)
-                // and API 19 (KitKat). It is safe to use them, as they are inlined
-                // at compile-time and do nothing on earlier devices.
                 mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -120,33 +102,22 @@ public class Profile extends AppCompatActivity {
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
-        String username = getIntent().getExtras().getString("username");
-        Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
-        EditText et = (EditText)findViewById(R.id.UserName);
-        et.setText(username);
+        Toast.makeText(this, FullscreenActivity.getUsername(), Toast.LENGTH_SHORT).show();
+        EditText et = findViewById(R.id.UserName);
+        et.setText(FullscreenActivity.getUsername());
         et.setClickable(false);
 
-        // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
             }
         });
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        //binding.dummyButton.setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
         delayedHide(100);
     }
 
@@ -159,21 +130,17 @@ public class Profile extends AppCompatActivity {
     }
 
     private void hide() {
-        // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
     private void show() {
-        // Show the system bar
         if (Build.VERSION.SDK_INT >= 30) {
             mContentView.getWindowInsetsController().show(
                     WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
@@ -182,49 +149,46 @@ public class Profile extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
         mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
         mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
     }
 
-    /**
-     * Schedules a call to hide() in delay milliseconds, canceling any
-     * previously scheduled calls.
-     */
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
     public void OpenMain(View view) {
-        EditText et = (EditText)findViewById(R.id.UserName);
         Intent intent = new Intent(this, FullscreenActivity.class);
-        intent.putExtra("username", et.getText().toString());
-        Toast.makeText(this, et.getText().toString(), Toast.LENGTH_SHORT).show();
         startActivity(intent);
         finish();
     }
 
     boolean state = true;
     public void ChangeName(View view){
-        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.Name);
-        Button btn = (Button)findViewById(R.id.button4);
+        ConstraintLayout menu = findViewById(R.id.Name);
+        EditText et = findViewById(R.id.editTextTextPersonName);
+        Button btn = findViewById(R.id.button4);
         if (state){
-            menu.setVisibility(menu.VISIBLE);
+            menu.setVisibility(View.VISIBLE);
+            et.setText(FullscreenActivity.getUsername());
             state = false;
             btn.setText("Сохранить");
         } else {
-            menu.setVisibility(menu.GONE);
+            menu.setVisibility(View.GONE);
             state = true;
             btn.setText("Изменить имя");
+            if (!et.getText().toString().equals(FullscreenActivity.getUsername())){
+                FullscreenActivity.setUsername(et.getText().toString());
+            }
+            et.invalidate();
         }
     }
 
     boolean statePass = true;
     public void ChangePassword(View view){
-        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.Password);
-        Button btn = (Button)findViewById(R.id.button10);
+        ConstraintLayout menu = findViewById(R.id.Password);
+        Button btn = findViewById(R.id.button10);
         if (statePass){
             menu.setVisibility(menu.VISIBLE);
             statePass = false;
