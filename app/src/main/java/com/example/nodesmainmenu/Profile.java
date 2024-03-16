@@ -102,7 +102,6 @@ public class Profile extends AppCompatActivity {
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
-        Toast.makeText(this, FullscreenActivity.getUsername(), Toast.LENGTH_SHORT).show();
         EditText et = findViewById(R.id.UserName);
         et.setText(FullscreenActivity.getUsername());
         et.setClickable(false);
@@ -168,6 +167,7 @@ public class Profile extends AppCompatActivity {
     public void ChangeName(View view){
         ConstraintLayout menu = findViewById(R.id.Name);
         EditText et = findViewById(R.id.editTextTextPersonName);
+        EditText hat = findViewById(R.id.UserName);
         Button btn = findViewById(R.id.button4);
         if (state){
             menu.setVisibility(View.VISIBLE);
@@ -180,8 +180,8 @@ public class Profile extends AppCompatActivity {
             btn.setText("Изменить имя");
             if (!et.getText().toString().equals(FullscreenActivity.getUsername())){
                 FullscreenActivity.setUsername(et.getText().toString());
+                hat.setText(et.getText().toString());
             }
-            et.invalidate();
         }
     }
 
@@ -189,14 +189,27 @@ public class Profile extends AppCompatActivity {
     public void ChangePassword(View view){
         ConstraintLayout menu = findViewById(R.id.Password);
         Button btn = findViewById(R.id.button10);
+        EditText oldPass = findViewById(R.id.oldPass);
+        EditText newPass = findViewById(R.id.newPass);
+        EditText confPass = findViewById(R.id.confirmPass);
         if (statePass){
-            menu.setVisibility(menu.VISIBLE);
+            menu.setVisibility(View.VISIBLE);
             statePass = false;
             btn.setText("Сохранить");
         } else {
-            menu.setVisibility(menu.GONE);
+            menu.setVisibility(View.GONE);
             statePass = true;
             btn.setText("Сменить пароль");
+            if (oldPass.getText().toString().equals(FullscreenActivity.getPassword())){
+                if (newPass.getText().toString().equals(confPass.getText().toString())){
+                    FullscreenActivity.setPassword(newPass.getText().toString());
+                    Toast.makeText(this, "Пароль успешно изменен", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Неверный пароль", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

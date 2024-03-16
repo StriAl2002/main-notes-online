@@ -80,8 +80,6 @@ public class LoginActivity extends AppCompatActivity {
                     updateUiWithUser(loginResult.getSuccess());
                 }
                 setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
                 finish();
             }
         });
@@ -124,7 +122,8 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
                 Intent intent = new Intent(LoginActivity.this, FullscreenActivity.class);
-                intent.putExtra("username", usernameEditText.getText().toString());
+                FullscreenActivity.setUsername(usernameEditText.getText().toString());
+                FullscreenActivity.setPassword(passwordEditText.getText().toString());
                 startActivity(intent);
             }
         });
@@ -132,7 +131,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 

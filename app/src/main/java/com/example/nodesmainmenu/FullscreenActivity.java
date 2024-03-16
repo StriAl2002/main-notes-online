@@ -85,7 +85,17 @@ public class FullscreenActivity extends AppCompatActivity {
     public static void setUsername(String name){
         username = name;
     }
-    static String username = "";
+
+    public static String getPassword(){
+        return password;
+    }
+
+    public static void setPassword(String pass){
+        // todo hash password
+        password = pass;
+    }
+    static String username;
+    static String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
