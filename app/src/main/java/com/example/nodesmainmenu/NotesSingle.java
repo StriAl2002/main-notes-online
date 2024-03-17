@@ -12,7 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.nodesmainmenu.databinding.ActivityNotesSingle2Binding;
+
+import java.util.Objects;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -204,9 +206,7 @@ public class NotesSingle extends AppCompatActivity {
 
     public void OpenSingle(View view) {
         save();
-        String username = getIntent().getExtras().getString("username");
         Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
-        intent.putExtra("username", username);
         startActivity(intent);
         finish();
     }
@@ -214,58 +214,47 @@ public class NotesSingle extends AppCompatActivity {
 
 
     private void save() {
-        String id = getIntent().getExtras().getString("key");
-        final EditText edit =  (EditText) findViewById(R.id.EditedText);
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        final EditText edit = findViewById(R.id.EditedText);
         String myText = edit.getText().toString();
-        //sPref = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString(id, myText);
         ed.apply();
-        //Toast.makeText(this, myText, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
-        //String save = sPref.getString(SAVED_TEXT, "");
-        //Toast.makeText(this, save, Toast.LENGTH_SHORT).show();
     }
 
     public void load(View view) {
-        String id = getIntent().getExtras().getString("key");
-        final EditText edit =  (EditText) findViewById(R.id.EditedText);
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        final EditText edit = findViewById(R.id.EditedText);
         sPref = getPreferences(MODE_PRIVATE);
         String savedText;
         try {
             savedText = sPref.getString(id, "");
             edit.setText(savedText);
-            //Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
-        } catch (Exception e){
-            //Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
-        }
-        finally {
             Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
-        }
+        } catch (Exception ignored){}
     }
 
     boolean state = true;
     public void menu(View view){
-        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.menu);
+        ConstraintLayout menu = findViewById(R.id.menu);
         if (state){
-            menu.setVisibility(menu.VISIBLE);
+            menu.setVisibility(View.VISIBLE);
             state = false;
         } else {
-            menu.setVisibility(menu.GONE);
+            menu.setVisibility(View.GONE);
             state = true;
         }
     }
 
     public void delete(View view){
-        String id = getIntent().getExtras().getString("key");
-        String username = getIntent().getExtras().getString("username");
-        final EditText edit =  (EditText) findViewById(R.id.EditedText);
-        SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(id, "");
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed =  preferences.edit();
+        id += "node";
+        ed.putString(id, "deleted");
         ed.apply();
         Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
-        intent.putExtra("delete", id);
-        intent.putExtra("username", username);
         startActivity(intent);
         finish();
     }
