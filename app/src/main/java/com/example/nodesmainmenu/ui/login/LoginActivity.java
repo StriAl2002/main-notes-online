@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -24,10 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nodesmainmenu.FullscreenActivity;
+import com.example.nodesmainmenu.nodes.FullscreenActivity;
 import com.example.nodesmainmenu.R;
-import com.example.nodesmainmenu.ui.login.LoginViewModel;
-import com.example.nodesmainmenu.ui.login.LoginViewModelFactory;
 import com.example.nodesmainmenu.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {

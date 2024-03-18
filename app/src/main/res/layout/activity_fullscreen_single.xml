@@ -7,7 +7,7 @@
     android:background="?attr/fullscreenBackgroundColor"
     android:backgroundTint="#321E1E"
     android:theme="@style/ThemeOverlay.NodesMainMenu.FullscreenContainer"
-    tools:context=".FullscreenActivitySingle">
+    tools:context=".nodes.FullscreenActivitySingle">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,

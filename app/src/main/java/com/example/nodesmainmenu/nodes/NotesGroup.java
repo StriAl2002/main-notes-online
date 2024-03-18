@@ -1,9 +1,10 @@
-package com.example.nodesmainmenu;
+package com.example.nodesmainmenu.nodes;
 
 import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,28 +12,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.nodesmainmenu.databinding.ActivityFullscreenGroupBinding;
+import com.example.nodesmainmenu.R;
+import com.example.nodesmainmenu.databinding.ActivityNotesGroupBinding;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
-public class FullscreenActivityGroup extends AppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
+public class NotesGroup extends AppCompatActivity {
+
+    SharedPreferences sPref;
+
     private static final boolean AUTO_HIDE = true;
 
     /**
@@ -111,30 +106,22 @@ public class FullscreenActivityGroup extends AppCompatActivity {
             return false;
         }
     };
-    private ActivityFullscreenGroupBinding binding;
-
-    ArrayList<String> notes = new ArrayList<String>();
-    ArrayAdapter<String> arrayAdapter;
+    private ActivityNotesGroupBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_fullscreen_group);
-
-        /*ListView listView = (ListView)findViewById(R.id.listView);
-
-        notes.add("Example Note");
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, notes);
-        listView.setAdapter(arrayAdapter);
-*/
-        binding = ActivityFullscreenGroupBinding.inflate(getLayoutInflater());
+        String id = getIntent().getExtras().getString("key");
+        binding = ActivityNotesGroupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        Button btn;
+        btn = (Button)findViewById(R.id.load);
+        btn.performClick();
 
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
-        RestoreNode();
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +134,7 @@ public class FullscreenActivityGroup extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        //binding.dummyButton.setOnTouchListener(mDelayHideTouchListener);
+        binding.dummyButton.setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -207,95 +194,70 @@ public class FullscreenActivityGroup extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    public void OpenMain(View view) {
+    public void OpenGroup(View view) {
+        save();
         String username = getIntent().getExtras().getString("username");
-        Intent intent = new Intent(this, FullscreenActivity.class);
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivityGroup.class);
         intent.putExtra("username", username);
         startActivity(intent);
         finish();
     }
 
-    Integer buttonId = 1;
-    Integer createdNotes = 0;
-
-    public void CreateNewNode(View view) {
-        String id = "0";
-        try {
-            id = getIntent().getExtras().getString("delete");
-            //Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
-        } catch (Exception e){
-        }
-        finally {
-            Button myButton = new Button(this);
-            myButton.setHeight(300);
-            String realId = "Node " + buttonId.toString();
-            myButton.setId(buttonId);
-            myButton.setText(realId);
-            buttonId = buttonId + 1;
-            Integer intid = 0;
-            try {
-                intid = Integer.parseInt(id) + 1;
-            }catch (Exception e){}
-            finally {}
-            if (intid == buttonId){
-                myButton.setVisibility(View.GONE);
-                createdNotes = createdNotes - 1;
-            }
-            else {
-                createdNotes = createdNotes + 1;
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor ed = preferences.edit();
-                ed.putString("ButtonsGroup", createdNotes.toString());
-                ed.apply();
-
-                Integer id_ = myButton.getId();
-                //Toast.makeText(this, id_.toString(), Toast.LENGTH_SHORT).show();
-                LinearLayout ll = (LinearLayout)findViewById(R.id.linearlayout);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-                ll.addView(myButton, lp);
-                myButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String username = getIntent().getExtras().getString("username");
-                        Intent intent = new Intent(getApplicationContext(), NotesGroup.class);
-                        intent.putExtra("key", id_.toString());
-                        intent.putExtra("username", username);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-            }
-        }
 
 
+    private void save() {
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        final EditText edit = findViewById(R.id.Rename);
+        String myText = edit.getText().toString();
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(id, myText);
+        ed.apply();
+        Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
     }
 
-    public void RestoreNode() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        //sPref = getPreferences(MODE_PRIVATE);
-        String savedText = "0";
+    public void load(View view) {
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        final EditText edit = findViewById(R.id.Rename);
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText;
         try {
-            savedText = preferences.getString("ButtonsGroup", "");
+            savedText = sPref.getString(id, "");
+            edit.setText(savedText);
             //Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
         } catch (Exception e){
-            //Toast.makeText(this, "New note", Toast.LENGTH_SHORT).show();
         }
         finally {
-            //Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
         }
-        int count = Integer.parseInt(savedText);
-        while (count > 0){
-            //Toast.makeText(this, count.toString(), Toast.LENGTH_SHORT).show();
-            Button btn;
-            btn = findViewById(R.id.add);
-            btn.performClick();
-            count = count - 1;
+    }
+
+    boolean state = true;
+    public void menu(View view){
+        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.menu);
+        if (state){
+            menu.setVisibility(menu.VISIBLE);
+            state = false;
+        } else {
+            menu.setVisibility(menu.GONE);
+            state = true;
         }
+    }
+
+    public void delete(View view){
+        String id = getIntent().getExtras().getString("key");
+        String username = getIntent().getExtras().getString("username");
+        final EditText edit =  (EditText) findViewById(R.id.Rename);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(id, "");
+        ed.apply();
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivityGroup.class);
+        intent.putExtra("delete", id);
+        intent.putExtra("username", username);
+        startActivity(intent);
+        finish();
+    }
+
+    public void rename(View view){
 
     }
-    /*public void DeleteNode(View view){
-        View button = findViewById(R.id.)
-    }*/
 }

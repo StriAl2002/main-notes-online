@@ -1,4 +1,4 @@
-package com.example.nodesmainmenu;
+package com.example.nodesmainmenu.nodes;
 
 import android.annotation.SuppressLint;
 
@@ -7,23 +7,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.nodesmainmenu.databinding.ActivityProfileBinding;
-import com.example.nodesmainmenu.ui.login.LoginActivity;
+import com.example.nodesmainmenu.databinding.ActivityNotesSingle2Binding;
+import com.example.nodesmainmenu.R;
 
 import java.util.Objects;
 
-public class Profile extends AppCompatActivity {
+public class NotesSingle extends AppCompatActivity {
+
+    SharedPreferences sPref;
+
     private static final boolean AUTO_HIDE = true;
 
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
@@ -52,7 +56,6 @@ public class Profile extends AppCompatActivity {
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
-            // Delayed display of UI elements
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.show();
@@ -61,51 +64,35 @@ public class Profile extends AppCompatActivity {
         }
     };
     private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
+    private final Runnable mHideRunnable = this::hide;
+    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (AUTO_HIDE) {
+                    delayedHide(AUTO_HIDE_DELAY_MILLIS);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                view.performClick();
+                break;
+            default:
+                break;
         }
+        return false;
     };
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (AUTO_HIDE) {
-                        delayedHide(AUTO_HIDE_DELAY_MILLIS);
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    view.performClick();
-                    break;
-                default:
-                    break;
-            }
-            return false;
-        }
-    };
-    private ActivityProfileBinding binding;
+    private ActivityNotesSingle2Binding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding = ActivityProfileBinding.inflate(getLayoutInflater());
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+        binding = ActivityNotesSingle2Binding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
-        EditText et = findViewById(R.id.UserName);
-        et.setText(FullscreenActivity.getUsername());
-        et.setClickable(false);
-
+        load(mContentView);
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,6 +116,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void hide() {
+        // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
@@ -157,65 +145,78 @@ public class Profile extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    public void OpenMain(View view) {
-        Intent intent = new Intent(this, FullscreenActivity.class);
+    public void OpenSingle(View view) {
+        save();
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
         startActivity(intent);
         finish();
+    }
+
+    private void save() {
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        final EditText edit = findViewById(R.id.Rename);
+        String myText = edit.getText().toString();
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(id, myText);
+        ed.apply();
+        Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show();
+    }
+
+    public void load(View view) {
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        final EditText edit = findViewById(R.id.Rename);
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText;
+        try {
+            savedText = sPref.getString(id, "");
+            edit.setText(savedText);
+            Toast.makeText(this, "Успешно загружено", Toast.LENGTH_SHORT).show();
+        } catch (Exception ignored){}
     }
 
     boolean state = true;
-    public void ChangeName(View view){
-        ConstraintLayout menu = findViewById(R.id.Name);
-        EditText et = findViewById(R.id.editTextTextPersonName);
-        EditText hat = findViewById(R.id.UserName);
-        Button btn = findViewById(R.id.button4);
+    public void menu(View view){
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        ConstraintLayout menu = findViewById(R.id.menu);
         if (state){
             menu.setVisibility(View.VISIBLE);
-            et.setText(FullscreenActivity.getUsername());
+            EditText et = findViewById(R.id.renametext);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String nodesCarrier = id + "node";
+            et.setText(preferences.getString(nodesCarrier, ""));
             state = false;
-            btn.setText("Сохранить");
         } else {
             menu.setVisibility(View.GONE);
             state = true;
-            btn.setText("Изменить имя");
-            if (!et.getText().toString().equals(FullscreenActivity.getUsername())){
-                FullscreenActivity.setUsername(et.getText().toString());
-                hat.setText(et.getText().toString());
-            }
         }
     }
 
-    boolean statePass = true;
-    public void ChangePassword(View view){
-        ConstraintLayout menu = findViewById(R.id.Password);
-        Button btn = findViewById(R.id.button10);
-        EditText oldPass = findViewById(R.id.oldPass);
-        EditText newPass = findViewById(R.id.newPass);
-        EditText confPass = findViewById(R.id.confirmPass);
-        if (statePass){
-            menu.setVisibility(View.VISIBLE);
-            statePass = false;
-            btn.setText("Сохранить");
-        } else {
-            menu.setVisibility(View.GONE);
-            statePass = true;
-            btn.setText("Сменить пароль");
-            if (oldPass.getText().toString().equals(FullscreenActivity.getPassword())){
-                if (newPass.getText().toString().equals(confPass.getText().toString())){
-                    FullscreenActivity.setPassword(newPass.getText().toString());
-                    Toast.makeText(this, "Пароль успешно изменен", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Неверный пароль", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public void OpenAuth(View view) {
-        Intent intent = new Intent(this, LoginActivity.class);
+    public void delete(View view){
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed =  preferences.edit();
+        id += "node";
+        ed.putString(id, "deleted");
+        ed.apply();
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivitySingle.class);
         startActivity(intent);
         finish();
+    }
+
+    public void rename(View view){
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        EditText et = findViewById(R.id.renametext);
+        String newName = et.getText().toString();
+        if ((newName.length() < 20) && (!newName.contains("deleted"))){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor ed =  preferences.edit();
+            String NodesCarrier = id + "node";
+            ed.putString(NodesCarrier, newName);
+            ed.apply();
+            Toast.makeText(this, "Имя заметки успешно изменено на " + newName, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Нарушение в новом имени заметки", Toast.LENGTH_SHORT).show();
+        }
+        menu(view);
     }
 }

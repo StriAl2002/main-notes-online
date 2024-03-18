@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/light_blue_600"
     android:theme="@style/ThemeOverlay.NodesMainMenu.FullscreenContainer"
-    tools:context=".NotesSingle">
+    tools:context=".nodes.NotesSingle">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -138,7 +138,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
-                    android:id="@+id/EditedText"
+                    android:id="@+id/Rename"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:autoSizeMinTextSize="1dp"

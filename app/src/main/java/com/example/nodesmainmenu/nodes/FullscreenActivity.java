@@ -1,4 +1,4 @@
-package com.example.nodesmainmenu;
+package com.example.nodesmainmenu.nodes;
 
 import android.annotation.SuppressLint;
 
@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.WindowInsets;
 
 import com.example.nodesmainmenu.databinding.ActivityFullscreenBinding;
+import com.example.nodesmainmenu.nodes.FullscreenActivityGroup;
+import com.example.nodesmainmenu.nodes.FullscreenActivitySingle;
+import com.example.nodesmainmenu.nodes.Profile;
 
 public class FullscreenActivity extends AppCompatActivity {
 
