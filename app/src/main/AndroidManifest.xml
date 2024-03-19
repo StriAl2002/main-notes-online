@@ -19,6 +19,12 @@
             android:label="@string/title_activity_profile"
             android:theme="@style/Theme.NodesMainMenu.Fullscreen" />
         <activity
+            android:name=".nodes.UserList"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="UserList"
+            android:theme="@style/Theme.NodesMainMenu.Fullscreen" />
+        <activity
             android:name=".nodes.NotesGroup"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"

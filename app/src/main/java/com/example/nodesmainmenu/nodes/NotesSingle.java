@@ -116,7 +116,6 @@ public class NotesSingle extends AppCompatActivity {
     }
 
     private void hide() {
-        // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();

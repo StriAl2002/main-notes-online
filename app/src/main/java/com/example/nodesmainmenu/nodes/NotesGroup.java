@@ -12,13 +12,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.nodesmainmenu.R;
 import com.example.nodesmainmenu.databinding.ActivityNotesGroupBinding;
 
@@ -30,16 +29,8 @@ public class NotesGroup extends AppCompatActivity {
 
     private static final boolean AUTO_HIDE = true;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler(Looper.myLooper());
     private View mContentView;
@@ -47,14 +38,10 @@ public class NotesGroup extends AppCompatActivity {
         @SuppressLint("InlinedApi")
         @Override
         public void run() {
-            // Delayed removal of status and navigation bar
             if (Build.VERSION.SDK_INT >= 30) {
                 mContentView.getWindowInsetsController().hide(
                         WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
             } else {
-                // Note that some of these constants are new as of API 16 (Jelly Bean)
-                // and API 19 (KitKat). It is safe to use them, as they are inlined
-                // at compile-time and do nothing on earlier devices.
                 mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -68,7 +55,6 @@ public class NotesGroup extends AppCompatActivity {
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
-            // Delayed display of UI elements
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.show();
@@ -77,73 +63,46 @@ public class NotesGroup extends AppCompatActivity {
         }
     };
     private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
+    private final Runnable mHideRunnable = this::hide;
+    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (AUTO_HIDE) {
+                    delayedHide(AUTO_HIDE_DELAY_MILLIS);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                view.performClick();
+                break;
+            default:
+                break;
         }
-    };
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (AUTO_HIDE) {
-                        delayedHide(AUTO_HIDE_DELAY_MILLIS);
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    view.performClick();
-                    break;
-                default:
-                    break;
-            }
-            return false;
-        }
+        return false;
     };
     private ActivityNotesGroupBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        String id = getIntent().getExtras().getString("key");
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
         binding = ActivityNotesGroupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Button btn;
-        btn = (Button)findViewById(R.id.load);
-        btn.performClick();
-
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
-
-        // Set up the user interaction to manually show or hide the system UI.
+        load(mContentView);
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
             }
         });
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        binding.dummyButton.setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
         delayedHide(100);
     }
 
@@ -156,21 +115,17 @@ public class NotesGroup extends AppCompatActivity {
     }
 
     private void hide() {
-        // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
     private void show() {
-        // Show the system bar
         if (Build.VERSION.SDK_INT >= 30) {
             mContentView.getWindowInsetsController().show(
                     WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
@@ -179,16 +134,10 @@ public class NotesGroup extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
         mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
         mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
     }
 
-    /**
-     * Schedules a call to hide() in delay milliseconds, canceling any
-     * previously scheduled calls.
-     */
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
@@ -196,14 +145,8 @@ public class NotesGroup extends AppCompatActivity {
 
     public void OpenGroup(View view) {
         save();
-        String username = getIntent().getExtras().getString("username");
-        Intent intent = new Intent(getApplicationContext(), FullscreenActivityGroup.class);
-        intent.putExtra("username", username);
-        startActivity(intent);
         finish();
     }
-
-
 
     private void save() {
         String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
@@ -212,7 +155,7 @@ public class NotesGroup extends AppCompatActivity {
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString(id, myText);
         ed.apply();
-        Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show();
     }
 
     public void load(View view) {
@@ -223,41 +166,60 @@ public class NotesGroup extends AppCompatActivity {
         try {
             savedText = sPref.getString(id, "");
             edit.setText(savedText);
-            //Toast.makeText(this, savedText, Toast.LENGTH_SHORT).show();
-        } catch (Exception e){
-        }
-        finally {
-            Toast.makeText(this, "Loaded successfully", Toast.LENGTH_SHORT).show();
-        }
+            Toast.makeText(this, "Успешно загружено", Toast.LENGTH_SHORT).show();
+        } catch (Exception ignored){}
     }
 
     boolean state = true;
     public void menu(View view){
-        ConstraintLayout menu = (ConstraintLayout) findViewById(R.id.menu);
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        ConstraintLayout menu = findViewById(R.id.menu);
         if (state){
-            menu.setVisibility(menu.VISIBLE);
+            menu.setVisibility(View.VISIBLE);
+            EditText et = findViewById(R.id.renametext);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String nodesCarrier = id + "groupnode";
+            et.setText(preferences.getString(nodesCarrier, ""));
             state = false;
         } else {
-            menu.setVisibility(menu.GONE);
+            menu.setVisibility(View.GONE);
             state = true;
         }
     }
 
     public void delete(View view){
-        String id = getIntent().getExtras().getString("key");
-        String username = getIntent().getExtras().getString("username");
-        final EditText edit =  (EditText) findViewById(R.id.Rename);
-        SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(id, "");
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed =  preferences.edit();
+        id += "groupnode";
+        ed.putString(id, "deleted");
         ed.apply();
         Intent intent = new Intent(getApplicationContext(), FullscreenActivityGroup.class);
-        intent.putExtra("delete", id);
-        intent.putExtra("username", username);
         startActivity(intent);
         finish();
     }
 
     public void rename(View view){
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        EditText et = findViewById(R.id.renametext);
+        String newName = et.getText().toString();
+        if ((newName.length() < 20) && (!newName.contains("deleted"))){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor ed =  preferences.edit();
+            String NodesCarrier = id + "groupnode";
+            ed.putString(NodesCarrier, newName);
+            ed.apply();
+            Toast.makeText(this, "Имя заметки успешно изменено на " + newName, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Нарушение в новом имени заметки", Toast.LENGTH_SHORT).show();
+        }
+        menu(view);
+    }
 
+    public void users(View view){
+        String id = Objects.requireNonNull(getIntent().getExtras()).getString("key");
+        Intent intent = new Intent(getApplicationContext(), UserList.class);
+        intent.putExtra("key", id);
+        startActivity(intent);
     }
 }
