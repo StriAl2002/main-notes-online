@@ -149,16 +149,11 @@ public class FullscreenActivityGroup extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    ////////////////////////////// My Code //////////////////////////////
-
     public void OpenMain(View view) {
-        Intent intent = new Intent(this, FullscreenActivity.class);
-        startActivity(intent);
         finish();
     }
 
     public Integer getCreatedNotes(){
-        //todo change logic after adding database
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         return Integer.parseInt(Objects.requireNonNull(preferences.getString("NodesCounterGroup", "0")));
     }

@@ -159,8 +159,6 @@ public class Profile extends AppCompatActivity {
     }
 
     public void OpenMain(View view) {
-        Intent intent = new Intent(this, FullscreenActivity.class);
-        startActivity(intent);
         finish();
     }
 

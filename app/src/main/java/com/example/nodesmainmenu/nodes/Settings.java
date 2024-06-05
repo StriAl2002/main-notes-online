@@ -1,32 +1,31 @@
 package com.example.nodesmainmenu.nodes;
 
 import android.annotation.SuppressLint;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.nodesmainmenu.R;
-import com.example.nodesmainmenu.databinding.ActivityFullscreenSingleBinding;
+import com.example.nodesmainmenu.databinding.SettingsBinding;
+import com.example.nodesmainmenu.ui.login.LoginActivity;
 
-import java.util.Objects;
-
-public class FullscreenActivitySingle extends AppCompatActivity {
-    SharedPreferences sPref;
+public class Settings extends AppCompatActivity {
     private static final boolean AUTO_HIDE = true;
+
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler(Looper.myLooper());
     private View mContentView;
@@ -51,6 +50,7 @@ public class FullscreenActivitySingle extends AppCompatActivity {
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
+            // Delayed display of UI elements
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.show();
@@ -65,6 +65,11 @@ public class FullscreenActivitySingle extends AppCompatActivity {
             hide();
         }
     };
+    /**
+     * Touch listener to use for in-layout UI controls to delay hiding the
+     * system UI. This is to prevent the jarring behavior of controls going away
+     * while interacting with activity UI.
+     */
     private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -83,21 +88,16 @@ public class FullscreenActivitySingle extends AppCompatActivity {
             return false;
         }
     };
-    private ActivityFullscreenSingleBinding binding;
+    private SettingsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_fullscreen_single);
-
-        binding = ActivityFullscreenSingleBinding.inflate(getLayoutInflater());
+        binding = SettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         mVisible = true;
         mControlsView = binding.fullscreenContentControls;
         mContentView = binding.fullscreenContent;
-        restoreNodes();
 
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,75 +150,4 @@ public class FullscreenActivitySingle extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    ////////////////////////////// My Code //////////////////////////////
-
-    public void OpenMain(View view) {
-        finish();
-    }
-
-    public Integer getCreatedNotes(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return Integer.parseInt(Objects.requireNonNull(preferences.getString("NodesCounter", "0")));
-    }
-
-    public void setCreatedNotes(int counter){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor ed = preferences.edit();
-        ed.putString("NodesCounter", String.valueOf(counter));
-        ed.apply();
-    }
-
-    public void createNewNode(View view) {
-        int created = getCreatedNotes();
-        Button myButton = new Button(this);
-        myButton.setHeight(300);
-        created += 1;
-        String tempName = "Node " + created;
-        myButton.setId(created);
-        myButton.setText(tempName);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor ed =  preferences.edit();
-        String NodesCarrier = created + "node";
-        ed.putString(NodesCarrier, tempName);
-        ed.apply();
-        setCreatedNotes(created);
-        createButton(myButton);
-    }
-
-    public void restoreNodes(){
-        int counter = getCreatedNotes();
-        int id = 1;
-        while (counter > 0){
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String nodesCarrier = id + "node";
-            String tempName = "Node " + id;
-            String name = preferences.getString(nodesCarrier, tempName);
-            if ((name != null) && (!name.contains("deleted"))){
-                Button myButton = new Button(this);
-                myButton.setHeight(300);
-                myButton.setId(id);
-                myButton.setText(name);
-                createButton(myButton);
-            }
-            counter -= 1;
-            id += 1;
-        }
-    }
-
-    public void createButton(Button myButton){
-        LinearLayout ll = findViewById(R.id.linearlayout);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        ll.addView(myButton, lp);
-
-        myButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), NotesSingle.class);
-                intent.putExtra("key", String.valueOf(myButton.getId()));
-                startActivity(intent);
-            }
-        });
-    }
 }

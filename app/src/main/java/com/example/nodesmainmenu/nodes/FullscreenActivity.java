@@ -171,18 +171,20 @@ public class FullscreenActivity extends AppCompatActivity {
     public void OpenSingle(View view) {
         Intent intent = new Intent(this, FullscreenActivitySingle.class);
         startActivity(intent);
-        finish();
     }
 
     public void OpenGroup(View view) {
         Intent intent = new Intent(this, FullscreenActivityGroup.class);
         startActivity(intent);
-        finish();
     }
 
     public void OpenProfile(View view) {
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
-        finish();
+    }
+
+    public void OpenVoice(View view) {
+        Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
     }
 }
